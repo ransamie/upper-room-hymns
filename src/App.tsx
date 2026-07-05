@@ -1,0 +1,267 @@
+import { useState, useMemo, useEffect } from 'react';
+import { Search, ChevronLeft, Heart, Menu, X } from 'lucide-react';
+import hymnsData from './assets/hymns.json';
+import Drawer from './components/Drawer';
+
+type Hymn = {
+  number: number;
+  title: string;
+  lyrics: string;
+};
+
+const hymns: Hymn[] = hymnsData as Hymn[];
+
+export default function App() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  
+  const [selectedHymn, setSelectedHymn] = useState<Hymn | null>(null);
+  
+  // Tabs: 'all', 'index', 'favourite'
+  const [activeTab, setActiveTab] = useState<'all' | 'index' | 'favourite'>('all');
+  const [isLightMode, setIsLightMode] = useState(() => {
+    return localStorage.getItem('theme') === 'light';
+  });
+
+  useEffect(() => {
+    if (isLightMode) {
+      document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
+    }
+  }, [isLightMode]);
+  
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
+  // We initialize favorites from local storage if possible, but for simplicity here we use state
+  const [favorites, setFavorites] = useState<Set<number>>(() => {
+    try {
+      const saved = localStorage.getItem('hymn-favorites');
+      if (saved) return new Set(JSON.parse(saved));
+    } catch (e) {
+      console.error("Could not load favorites", e);
+    }
+    return new Set();
+  });
+
+  // Save favorites to local storage
+  useEffect(() => {
+    localStorage.setItem('hymn-favorites', JSON.stringify([...favorites]));
+  }, [favorites]);
+
+  const toggleFavorite = (e: React.MouseEvent, number: number) => {
+    e.stopPropagation();
+    setFavorites(prev => {
+      const next = new Set(prev);
+      if (next.has(number)) next.delete(number);
+      else next.add(number);
+      return next;
+    });
+  };
+
+  // 1. Filter by search term
+  // 2. Sort/Filter based on active tab
+  const displayedHymns = useMemo(() => {
+    let result = [...hymns];
+
+    // Filter by search term if active
+    if (searchTerm) {
+      const lower = searchTerm.toLowerCase();
+      result = result.filter(h => 
+        h.title.toLowerCase().includes(lower) || 
+        h.number.toString().includes(lower) ||
+        h.lyrics.toLowerCase().includes(lower)
+      );
+    }
+
+    // Apply Tab logic
+    if (activeTab === 'favourite') {
+      result = result.filter(h => favorites.has(h.number));
+    } else if (activeTab === 'index') {
+      // Sort alphabetically by title
+      result.sort((a, b) => a.title.localeCompare(b.title));
+    } else {
+      // 'all' tab -> Sort by number
+      result.sort((a, b) => a.number - b.number);
+    }
+
+    return result;
+  }, [searchTerm, activeTab, favorites]);
+
+  // View: Single Hymn Details
+  if (selectedHymn) {
+    return (
+      <div className="min-h-screen bg-bg-primary text-text-primary transition-colors bg-musical-pattern">
+        <header className="sticky top-0 glass-header p-4 flex items-center justify-between z-10">
+          <button 
+            onClick={() => setSelectedHymn(null)}
+            className="p-2 -ml-2 rounded-full hover:bg-border-subtle transition-colors flex items-center text-accent-gold"
+          >
+            <ChevronLeft size={28} />
+            <span className="font-medium ml-1">Back</span>
+          </button>
+          <div className="flex-1 text-center font-bold tracking-widest text-lg truncate px-4">
+            HYMN {String(selectedHymn.number).padStart(3, '0')}
+          </div>
+          <button 
+            onClick={(e) => toggleFavorite(e, selectedHymn.number)}
+            className="p-2 -mr-2 rounded-full hover:bg-border-subtle transition-colors"
+          >
+            <Heart 
+              size={24} 
+              className={favorites.has(selectedHymn.number) ? "fill-accent-orange text-accent-orange drop-shadow-[0_0_8px_rgba(234,88,12,0.6)]" : "text-text-secondary"} 
+            />
+          </button>
+        </header>
+
+        <main className="max-w-2xl mx-auto p-6 pb-24">
+          <h1 className="text-2xl md:text-3xl font-bold text-center mb-8 text-text-primary drop-shadow-md">
+            {selectedHymn.title}
+          </h1>
+          <div className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap font-serif text-text-primary">
+            {selectedHymn.lyrics}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // View: Main List
+  return (
+    <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col bg-musical-pattern">
+      
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} isLightMode={isLightMode} toggleTheme={() => setIsLightMode(!isLightMode)} />
+
+      {/* Header Area */}
+      <header className="sticky top-0 z-30 shadow-2xl">
+        {/* Top Navbar */}
+        <div className="glass-header px-4 py-4 flex items-center justify-between relative">
+          <button 
+            onClick={() => setIsDrawerOpen(true)}
+            className="p-2 -ml-2 rounded-full hover:bg-border-subtle transition-colors text-text-primary"
+          >
+            <Menu size={28} />
+          </button>
+          
+          {!isSearchOpen ? (
+            <>
+              <div className="flex flex-col items-center flex-1">
+                <h1 className="text-xl md:text-2xl font-black tracking-widest bg-gradient-to-r from-accent-gold to-accent-orange text-transparent bg-clip-text drop-shadow-lg">
+                  UPPER ROOM
+                </h1>
+                <p className="text-xs font-semibold tracking-[0.3em] uppercase text-text-secondary">Hymns</p>
+              </div>
+              <button 
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 -mr-2 rounded-full hover:bg-border-subtle transition-colors text-text-primary"
+              >
+                <Search size={24} />
+              </button>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center animate-in fade-in slide-in-from-right-4 duration-300">
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-accent-gold" />
+                </div>
+                <input
+                  type="search"
+                  autoFocus
+                  className="block w-full pl-10 pr-4 py-2 rounded-full bg-bg-secondary border border-border-subtle text-text-primary placeholder-slate-400 focus:outline-none focus:border-accent-gold transition-all"
+                  placeholder="Search hymns..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button 
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setSearchTerm('');
+                }}
+                className="p-2 ml-2 rounded-full hover:bg-border-subtle transition-colors text-text-secondary"
+              >
+                <X size={24} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex bg-bg-primary/90 backdrop-blur-md border-b border-border-subtle relative">
+          {['all', 'index', 'favourite'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as typeof activeTab)}
+              className={`flex-1 py-4 text-sm font-semibold tracking-wider uppercase transition-all relative ${
+                activeTab === tab ? 'text-accent-gold' : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              {tab}
+              {activeTab === tab && (
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent-gold to-accent-orange shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+              )}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      {/* Main List Area */}
+      <main className="flex-1 max-w-2xl mx-auto w-full p-4 relative z-0">
+        
+        {searchTerm && (
+          <div className="mb-4 text-sm font-medium text-accent-gold/80 px-2 flex justify-between animate-in fade-in">
+            <span>{displayedHymns.length} results found</span>
+          </div>
+        )}
+        
+        <div className="space-y-3">
+          {displayedHymns.map((hymn) => (
+            <div 
+              key={hymn.number}
+              onClick={() => { setSelectedHymn(hymn); window.scrollTo(0, 0); }}
+              className="group relative bg-bg-secondary/40 backdrop-blur-sm border border-border-subtle rounded-xl shadow-lg cursor-pointer transition-all duration-300 hover:bg-bg-secondary/80 hover:border-accent-gold/30 hover:-translate-y-0.5 overflow-hidden flex items-center"
+            >
+              {/* Vibrant left border accent */}
+              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-accent-gold to-accent-orange opacity-80 group-hover:opacity-100 transition-opacity"></div>
+              
+              <div className="flex-1 p-4 pl-5 flex items-center justify-between min-w-0">
+                <div className="flex items-center space-x-4 overflow-hidden flex-1 min-w-0">
+                  <div className="text-text-secondary font-mono text-lg font-medium group-hover:text-accent-gold transition-colors shrink-0">
+                    {String(hymn.number).padStart(3, '0')}
+                  </div>
+                  <div className="w-px h-8 bg-border-subtle shrink-0"></div>
+                  <h2 className="font-semibold text-base md:text-lg text-text-primary truncate pr-4 group-hover:text-text-primary transition-colors flex-1 min-w-0">
+                    {hymn.title}
+                  </h2>
+                </div>
+                
+                <button 
+                  onClick={(e) => toggleFavorite(e, hymn.number)}
+                  className="p-3 -m-3 shrink-0 rounded-full hover:bg-border-subtle transition-colors"
+                >
+                  <Heart 
+                    size={20} 
+                    className={favorites.has(hymn.number) ? "fill-accent-orange text-accent-orange" : "text-text-primary0 group-hover:text-text-secondary"} 
+                  />
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {displayedHymns.length === 0 && (
+            <div className="text-center py-20 text-text-primary0">
+              <Heart size={48} className="mx-auto mb-4 opacity-20" />
+              <p className="text-lg">
+                {activeTab === 'favourite' 
+                  ? "You haven't added any favorites yet." 
+                  : `No hymns found matching "${searchTerm}"`}
+              </p>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}

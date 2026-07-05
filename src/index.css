@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-subtle: var(--border-subtle);
+  
+  --color-accent-gold: #fbbf24;
+  --color-accent-orange: #ea580c;
+}
+
+@layer base {
+  :root {
+    --bg-primary: #0f172a; 
+    --bg-secondary: #1e293b; 
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-subtle: rgba(255, 255, 255, 0.1);
+  }
+
+  :root.light {
+    --bg-primary: #f8fafc; 
+    --bg-secondary: #ffffff; 
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-subtle: rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    @apply font-sans antialiased bg-bg-primary text-text-primary transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .bg-musical-pattern {
+    background-color: var(--bg-primary);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 18c0-1.65 1.35-3 3-3h12v-6h-3c-1.65 0-3-1.35-3-3s1.35-3 3-3h9c1.65 0 3 1.35 3 3v21c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6h3V21H18v9c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6h3V18zm-3 9c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm21 0c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z' fill='%23888888' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+  }
+  
+  .glass-header {
+    @apply bg-bg-primary/80 backdrop-blur-lg border-b border-border-subtle;
+  }
+  
+  .glass-drawer {
+    @apply bg-bg-primary/95 backdrop-blur-xl border-r border-border-subtle;
+  }
+}

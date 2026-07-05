@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ea580c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="512" height="512" rx="128" fill="url(#grad2)"/>
+  
+  <path d="M256,96 C256,96 160,208 160,320 C160,373.019336 202.980664,416 256,416 C309.019336,416 352,373.019336 352,320 C352,208 256,96 256,96 Z M256,384 C220.653776,384 192,355.346224 192,320 C192,263.296 230.4,195.84 256,155.392 C281.6,195.84 320,263.296 320,320 C320,355.346224 291.346224,384 256,384 Z M256,180.224 C234.666667,222.933333 213.333333,274.133333 213.333333,320 C213.333333,343.564147 232.435853,362.666667 256,362.666667 C279.564147,362.666667 298.666667,343.564147 298.666667,320 C298.666667,274.133333 277.333333,222.933333 256,180.224 Z" fill="url(#grad1)"/>
+  
+  <circle cx="256" cy="320" r="32" fill="#fbbf24"/>
+</svg>
