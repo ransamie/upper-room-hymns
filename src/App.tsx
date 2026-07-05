@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Search, ChevronLeft, Heart, Menu, X } from 'lucide-react';
 import hymnsData from './assets/hymns.json';
 import Drawer from './components/Drawer';
+import { FeedbackModal } from './components/FeedbackModal';
 
 type Hymn = {
   number: number;
@@ -42,6 +43,7 @@ export default function App() {
   }, [isLightMode]);
   
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   
   // We initialize favorites from local storage if possible, but for simplicity here we use state
   const [favorites, setFavorites] = useState<Set<number>>(() => {
@@ -157,7 +159,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col bg-musical-pattern">
       
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} isLightMode={isLightMode} toggleTheme={() => setIsLightMode(!isLightMode)} />
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} isLightMode={isLightMode} toggleTheme={() => setIsLightMode(!isLightMode)} onOpenFeedback={() => setIsFeedbackOpen(true)} />
+      <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
 
       {/* Header Area */}
       <header className="sticky top-0 z-30 shadow-2xl">
