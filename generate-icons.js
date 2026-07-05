@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const imgPath = path.join(__dirname, 'public', 'praying_hands.png');
+const imgPath = path.join(__dirname, 'public', 'praying_hands.jpg');
 const imgBuffer = fs.readFileSync(imgPath);
 
 async function generateIcons() {

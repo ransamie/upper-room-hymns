@@ -35,7 +35,7 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme }: Dr
             </button>
             <div className="flex flex-col items-center justify-center pt-8 pb-4">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-orange to-accent-gold flex items-center justify-center shadow-[0_0_30px_rgba(234,88,12,0.4)] mb-4 overflow-hidden p-2">
-                <img src="/praying_hands.png" alt="Praying Hands Logo" className="w-full h-full object-contain filter drop-shadow-md" />
+                <img src="/praying_hands.jpg" alt="Praying Hands Logo" className="w-full h-full object-cover filter drop-shadow-md rounded-full" />
               </div>
               <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-accent-gold to-accent-orange text-transparent bg-clip-text">
                 UPPER ROOM

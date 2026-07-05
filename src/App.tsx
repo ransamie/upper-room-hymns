@@ -104,7 +104,7 @@ export default function App() {
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg-primary transition-opacity duration-1000">
         <div className="animate-pulse flex flex-col items-center">
           <div className="w-40 h-40 rounded-full bg-gradient-to-br from-accent-orange to-accent-gold flex items-center justify-center shadow-[0_0_50px_rgba(234,88,12,0.5)] mb-8 overflow-hidden p-3">
-            <img src="/praying_hands.png" alt="Praying Hands Logo" className="w-full h-full object-contain filter drop-shadow-lg" />
+            <img src="/praying_hands.jpg" alt="Praying Hands Logo" className="w-full h-full object-cover filter drop-shadow-lg rounded-full" />
           </div>
           <h1 className="text-3xl md:text-4xl font-black tracking-widest bg-gradient-to-r from-accent-gold to-accent-orange text-transparent bg-clip-text drop-shadow-lg">
             UPPER ROOM
