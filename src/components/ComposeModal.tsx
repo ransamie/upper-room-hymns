@@ -4,12 +4,25 @@ import { X, Save } from 'lucide-react';
 interface ComposeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (title: string, lyrics: string) => void;
+  onSave: (title: string, lyrics: string, hymnNumber?: number) => void;
+  initialHymn?: { number?: number; title: string; lyrics: string } | null;
 }
 
-export const ComposeModal: React.FC<ComposeModalProps> = ({ isOpen, onClose, onSave }) => {
+export const ComposeModal: React.FC<ComposeModalProps> = ({ isOpen, onClose, onSave, initialHymn }) => {
   const [title, setTitle] = useState('');
   const [lyrics, setLyrics] = useState('');
+
+  React.useEffect(() => {
+    if (isOpen) {
+      if (initialHymn) {
+        setTitle(initialHymn.title);
+        setLyrics(initialHymn.lyrics);
+      } else {
+        setTitle('');
+        setLyrics('');
+      }
+    }
+  }, [isOpen, initialHymn]);
 
   if (!isOpen) return null;
 
@@ -17,7 +30,7 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({ isOpen, onClose, onS
     e.preventDefault();
     if (!title.trim() || !lyrics.trim()) return;
     
-    onSave(title.trim(), lyrics.trim());
+    onSave(title.trim(), lyrics.trim(), initialHymn?.number);
     setTitle('');
     setLyrics('');
     onClose();
@@ -39,14 +52,16 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({ isOpen, onClose, onS
       
       <div className="relative w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-2xl bg-bg-primary sm:rounded-2xl shadow-2xl border-0 sm:border border-border-subtle flex flex-col animate-in fade-in sm:zoom-in-95 duration-200">
         {/* Header */}
-        <div className="px-4 py-4 border-b border-border-subtle flex justify-between items-center bg-bg-secondary/50">
+        <div className="px-6 py-4 border-b border-border-subtle flex justify-between items-center bg-bg-secondary/50">
           <button 
             onClick={handleClose}
             className="p-2 -ml-2 rounded-full text-text-secondary hover:text-text-primary hover:bg-border-subtle transition-colors flex items-center"
           >
             <X size={24} />
           </button>
-          <h2 className="text-xl font-bold text-text-primary absolute left-1/2 -translate-x-1/2">Compose Song</h2>
+          <h2 className="text-xl font-bold text-text-primary absolute left-1/2 -translate-x-1/2">
+            {initialHymn ? "Edit Song" : "Compose Song"}
+          </h2>
           <button 
             onClick={handleSave}
             disabled={!title.trim() || !lyrics.trim()}

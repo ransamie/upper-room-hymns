@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronLeft, Heart, Menu, X, Trash2 } from 'lucide-react';
+import { Search, ChevronLeft, Heart, Menu, X, Trash2, Edit2 } from 'lucide-react';
 import hymnsData from './assets/hymns.json';
 import Drawer from './components/Drawer';
 import { FeedbackModal } from './components/FeedbackModal';
@@ -51,6 +51,7 @@ export default function App() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isComposeOpen, setIsComposeOpen] = useState(false);
+  const [composeInitialHymn, setComposeInitialHymn] = useState<Hymn | null>(null);
   
   // Custom Hymns stored locally
   const [customHymns, setCustomHymns] = useState<Hymn[]>(() => {
@@ -74,20 +75,30 @@ export default function App() {
     localStorage.setItem('hymn-custom-songs', JSON.stringify(customHymns));
   }, [customHymns]);
 
-  const handleSaveCustomSong = (title: string, lyrics: string) => {
+  const handleSaveCustomSong = (title: string, lyrics: string, hymnNumber?: number) => {
     setCustomHymns(prev => {
-      const newNumber = prev.length > 0 ? Math.max(...prev.map(h => h.number)) + 1 : 1;
-      const newSong: Hymn = {
-        number: newNumber, 
-        title,
-        lyrics,
-        isCustom: true
-      };
-      
-      // Auto open read view page
-      setSelectedHymn(newSong);
-      
-      return [...prev, newSong];
+      if (hymnNumber) {
+        // Edit existing song
+        const updatedSong: Hymn = {
+          number: hymnNumber,
+          title,
+          lyrics,
+          isCustom: true
+        };
+        setSelectedHymn(updatedSong);
+        return prev.map(h => h.number === hymnNumber ? updatedSong : h);
+      } else {
+        // Create new song
+        const newNumber = prev.length > 0 ? Math.max(...prev.map(h => h.number)) + 1 : 1;
+        const newSong: Hymn = {
+          number: newNumber, 
+          title,
+          lyrics,
+          isCustom: true
+        };
+        setSelectedHymn(newSong);
+        return [...prev, newSong];
+      }
     });
   };
 
@@ -196,12 +207,23 @@ export default function App() {
           </div>
           <div className="flex items-center space-x-2">
             {(selectedHymn.isCustom || customHymns.some(ch => ch.number === selectedHymn.number)) && (
-              <button 
-                onClick={() => handleDeleteCustomSong(selectedHymn.number)}
-                className="p-2 rounded-full hover:bg-border-subtle transition-colors text-red-500/80 hover:text-red-500"
-              >
-                <Trash2 size={22} />
-              </button>
+              <>
+                <button 
+                  onClick={() => {
+                    setComposeInitialHymn(selectedHymn);
+                    setIsComposeOpen(true);
+                  }}
+                  className="p-2 rounded-full hover:bg-border-subtle transition-colors text-text-secondary hover:text-accent-gold"
+                >
+                  <Edit2 size={22} />
+                </button>
+                <button 
+                  onClick={() => handleDeleteCustomSong(selectedHymn.number)}
+                  className="p-2 rounded-full hover:bg-border-subtle transition-colors text-red-500/80 hover:text-red-500"
+                >
+                  <Trash2 size={22} />
+                </button>
+              </>
             )}
             <button 
               onClick={(e) => toggleFavorite(e, selectedHymn)}
@@ -231,10 +253,27 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary flex flex-col bg-musical-pattern">
       
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} isLightMode={isLightMode} toggleTheme={() => setIsLightMode(!isLightMode)} onOpenFeedback={() => setIsFeedbackOpen(true)} onOpenHelp={() => setIsHelpOpen(true)} onOpenCompose={() => setIsComposeOpen(true)} onSelectTab={setActiveTab} />
+      <Drawer 
+        isOpen={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        isLightMode={isLightMode} 
+        toggleTheme={() => setIsLightMode(!isLightMode)}
+        onFeedback={() => setIsFeedbackOpen(true)}
+        onHelp={() => setIsHelpOpen(true)}
+        onCompose={() => {
+          setComposeInitialHymn(null);
+          setIsComposeOpen(true);
+        }}
+        onMyAddedSongs={() => setActiveTab('custom')} 
+      />
       <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
       <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
-      <ComposeModal isOpen={isComposeOpen} onClose={() => setIsComposeOpen(false)} onSave={handleSaveCustomSong} />
+      <ComposeModal 
+        isOpen={isComposeOpen} 
+        onClose={() => setIsComposeOpen(false)} 
+        onSave={handleSaveCustomSong}
+        initialHymn={composeInitialHymn}
+      />
 
       {/* Header Area */}
       <header className="sticky top-0 z-30 shadow-2xl">
