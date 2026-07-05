@@ -6,9 +6,10 @@ interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenFeedback: () => void;
+  onOpenHelp: () => void;
 }
 
-export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOpenFeedback }: DrawerProps) {
+export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOpenFeedback, onOpenHelp }: DrawerProps) {
   return (
     <>
       {/* Backdrop */}
@@ -78,7 +79,7 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOp
                 </button>
               </li>
               <li>
-                <button onClick={(e) => { if(!e.currentTarget.getAttribute('onClick')) alert('Feature coming soon!'); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
+                <button onClick={() => { onClose(); onOpenHelp(); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
                   <HelpCircle size={20} className="mr-4 text-accent-gold" />
                   <span className="font-medium">Help</span>
                 </button>
