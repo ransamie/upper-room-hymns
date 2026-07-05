@@ -245,6 +245,12 @@ export default function App() {
             {selectedHymn.lyrics}
           </div>
         </main>
+        <ComposeModal 
+          isOpen={isComposeOpen} 
+          onClose={() => setIsComposeOpen(false)} 
+          onSave={handleSaveCustomSong}
+          initialHymn={composeInitialHymn}
+        />
       </div>
     );
   }
