@@ -291,22 +291,34 @@ export default function App() {
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-bg-primary/90 backdrop-blur-md border-b border-border-subtle relative">
-          {['all', 'index', 'favourite'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab as typeof activeTab)}
-              className={`flex-1 py-4 text-sm font-semibold tracking-wider uppercase transition-all relative ${
-                activeTab === tab ? 'text-accent-gold' : 'text-text-secondary hover:text-text-primary'
-              }`}
+        {activeTab !== 'custom' ? (
+          <div className="flex bg-bg-primary/90 backdrop-blur-md border-b border-border-subtle relative">
+            {['all', 'index', 'favourite'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab as typeof activeTab)}
+                className={`flex-1 py-4 text-sm font-semibold tracking-wider uppercase transition-all relative ${
+                  activeTab === tab ? 'text-accent-gold' : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent-gold to-accent-orange shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+                )}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex bg-bg-primary/90 backdrop-blur-md border-b border-border-subtle relative px-6 py-4 items-center justify-between">
+            <span className="font-bold tracking-widest text-accent-gold uppercase text-sm">My Added Songs</span>
+            <button 
+              onClick={() => setActiveTab('all')}
+              className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-text-primary transition-colors bg-border-subtle/50 px-3 py-1.5 rounded-full"
             >
-              {tab}
-              {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent-gold to-accent-orange shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
-              )}
+              Back to Hymns
             </button>
-          ))}
-        </div>
+          </div>
+        )}
       </header>
 
       {/* Main List Area */}
