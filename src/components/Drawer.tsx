@@ -1,4 +1,4 @@
-import { X, PenTool, Music, RefreshCw, HelpCircle } from 'lucide-react';
+import { X, PenTool, Music, RefreshCw, HelpCircle, Mail } from 'lucide-react';
 
 interface DrawerProps {
   isLightMode: boolean;
@@ -57,6 +57,12 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme }: Dr
                   <PenTool size={20} className="mr-4 text-accent-gold" />
                   <span className="font-medium">Compose Song</span>
                 </button>
+              </li>
+              <li>
+                <a href="mailto:ransomakpan2022@gmail.com?subject=Upper Room Hymns App Feedback" className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
+                  <Mail size={20} className="mr-4 text-accent-gold" />
+                  <span className="font-medium">Send Feedback</span>
+                </a>
               </li>
               <li>
                 <button onClick={(e) => { if(!e.currentTarget.getAttribute('onClick')) alert('Feature coming soon!'); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
