@@ -7,9 +7,11 @@ interface DrawerProps {
   onClose: () => void;
   onOpenFeedback: () => void;
   onOpenHelp: () => void;
+  onOpenCompose: () => void;
+  onSelectTab: (tab: 'all' | 'index' | 'favourite' | 'custom') => void;
 }
 
-export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOpenFeedback, onOpenHelp }: DrawerProps) {
+export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOpenFeedback, onOpenHelp, onOpenCompose, onSelectTab }: DrawerProps) {
   return (
     <>
       {/* Backdrop */}
@@ -49,13 +51,13 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOp
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="space-y-1 px-3">
               <li>
-                <button onClick={() => onClose()} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
+                <button onClick={() => { onSelectTab('all'); onClose(); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
                   <Music size={20} className="mr-4 text-accent-gold" />
                   <span className="font-medium">All Hymns</span>
                 </button>
               </li>
               <li>
-                <button onClick={(e) => { if(!e.currentTarget.getAttribute('onClick')) alert('Feature coming soon!'); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
+                <button onClick={() => { onClose(); onOpenCompose(); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
                   <PenTool size={20} className="mr-4 text-accent-gold" />
                   <span className="font-medium">Compose Song</span>
                 </button>
@@ -67,7 +69,7 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOp
                 </button>
               </li>
               <li>
-                <button onClick={(e) => { if(!e.currentTarget.getAttribute('onClick')) alert('Feature coming soon!'); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
+                <button onClick={() => { onSelectTab('custom'); onClose(); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
                   <Music size={20} className="mr-4 text-accent-gold" />
                   <span className="font-medium">My Added Songs</span>
                 </button>

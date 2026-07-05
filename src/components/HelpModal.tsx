@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Search, Heart, Moon, Phone } from 'lucide-react';
+import { X, Search, Heart, Moon, Phone, PenTool } from 'lucide-react';
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -52,6 +52,16 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                 <div>
                   <strong className="text-text-primary block text-sm">Smart Search</strong>
                   <span className="text-text-secondary text-sm">Find hymns easily by searching for their title, hymn number, or even specific lyrics.</span>
+                </div>
+              </li>
+
+              <li className="flex items-start">
+                <div className="bg-bg-secondary p-2 rounded-lg mr-3">
+                  <PenTool size={18} className="text-text-primary" />
+                </div>
+                <div>
+                  <strong className="text-text-primary block text-sm">Compose Song</strong>
+                  <span className="text-text-secondary text-sm">Tap "Compose Song" in the menu to write and save your own spontaneous choruses. Find them in the "My Added Songs" tab!</span>
                 </div>
               </li>
               
