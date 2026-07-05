@@ -56,7 +56,10 @@ export default function App() {
   const [customHymns, setCustomHymns] = useState<Hymn[]>(() => {
     try {
       const saved = localStorage.getItem('hymn-custom-songs');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.map((h: Hymn) => ({ ...h, isCustom: true }));
+      }
     } catch (e) {
       console.error("Could not load custom songs", e);
     }
@@ -188,7 +191,7 @@ export default function App() {
             HYMN {String(selectedHymn.number).padStart(3, '0')}
           </div>
           <div className="flex items-center space-x-2">
-            {selectedHymn.isCustom && (
+            {(selectedHymn.isCustom || customHymns.some(ch => ch.number === selectedHymn.number)) && (
               <button 
                 onClick={() => handleDeleteCustomSong(selectedHymn.number)}
                 className="p-2 rounded-full hover:bg-border-subtle transition-colors text-red-500/80 hover:text-red-500"
