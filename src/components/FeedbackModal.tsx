@@ -41,12 +41,6 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
       const result = await response.json();
       if (result.success) {
         setStatus('success');
-        setTimeout(() => {
-          setStatus('idle');
-          setMessage('');
-          setEmail('');
-          onClose();
-        }, 3000);
       } else {
         setStatus('error');
       }
@@ -67,7 +61,12 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
         <div className="px-6 py-4 border-b border-border-subtle flex justify-between items-center bg-bg-secondary/50">
           <h2 className="text-xl font-bold text-text-primary">Send Feedback</h2>
           <button 
-            onClick={onClose}
+            onClick={() => {
+              setStatus('idle');
+              setMessage('');
+              setEmail('');
+              onClose();
+            }}
             className="p-2 rounded-full text-text-secondary hover:text-text-primary hover:bg-border-subtle transition-colors"
           >
             <X size={20} />
@@ -82,9 +81,20 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 <CheckCircle2 size={32} className="text-green-500" />
               </div>
               <h3 className="text-xl font-bold text-text-primary mb-2">Feedback Sent!</h3>
-              <p className="text-text-secondary">
+              <p className="text-text-secondary mb-6">
                 Thank you for your feedback. It has been routed directly to the developer's email.
               </p>
+              <button
+                onClick={() => {
+                  setStatus('idle');
+                  setMessage('');
+                  setEmail('');
+                  onClose();
+                }}
+                className="w-full py-4 rounded-xl bg-bg-secondary border border-border-subtle text-text-primary font-bold text-lg hover:bg-border-subtle active:scale-[0.98] transition-all"
+              >
+                Done
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
