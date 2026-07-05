@@ -19,14 +19,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
 
     setStatus('submitting');
 
-    // NOTE: Web3Forms access key will go here!
-    const ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
-
-    if (ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY_HERE") {
-      alert("Developer note: We are waiting on the Access Key from you to activate this form!");
-      setStatus('idle');
-      return;
-    }
+    // NOTE: Web3Forms access key
+    const ACCESS_KEY = "95004091-e9aa-4dd5-9efb-7ccdfe69f2ae";
 
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
