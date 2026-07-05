@@ -47,7 +47,7 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme }: Dr
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="space-y-1 px-3">
               <li>
-                <button onClick={() => { setView('list'); setIsDrawerOpen(false); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
+                <button onClick={() => onClose()} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
                   <Music size={20} className="mr-4 text-accent-gold" />
                   <span className="font-medium">All Hymns</span>
                 </button>
