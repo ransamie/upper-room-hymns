@@ -10,7 +10,10 @@ type Hymn = {
   number: number;
   title: string;
   lyrics: string;
+  isCustom?: boolean;
 };
+
+const getHymnId = (h: Hymn | { number: number, isCustom?: boolean }) => `${h.isCustom ? 'c_' : ''}${h.number}`;
 
 const hymns: Hymn[] = hymnsData as Hymn[];
 
@@ -65,13 +68,20 @@ export default function App() {
   }, [customHymns]);
 
   const handleSaveCustomSong = (title: string, lyrics: string) => {
-    const newSong: Hymn = {
-      // Use negative numbers or large numbers to distinguish custom songs
-      number: Date.now(), 
-      title,
-      lyrics
-    };
-    setCustomHymns(prev => [...prev, newSong]);
+    setCustomHymns(prev => {
+      const newNumber = prev.length > 0 ? Math.max(...prev.map(h => h.number)) + 1 : 1;
+      const newSong: Hymn = {
+        number: newNumber, 
+        title,
+        lyrics,
+        isCustom: true
+      };
+      
+      // Auto open read view page
+      setSelectedHymn(newSong);
+      
+      return [...prev, newSong];
+    });
   };
 
   const handleDeleteCustomSong = (number: number) => {
@@ -82,10 +92,13 @@ export default function App() {
   };
   
   // We initialize favorites from local storage if possible, but for simplicity here we use state
-  const [favorites, setFavorites] = useState<Set<number>>(() => {
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
     try {
       const saved = localStorage.getItem('hymn-favorites');
-      if (saved) return new Set(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return new Set(parsed.map(String));
+      }
     } catch (e) {
       console.error("Could not load favorites", e);
     }
@@ -97,12 +110,13 @@ export default function App() {
     localStorage.setItem('hymn-favorites', JSON.stringify([...favorites]));
   }, [favorites]);
 
-  const toggleFavorite = (e: React.MouseEvent, number: number) => {
+  const toggleFavorite = (e: React.MouseEvent, hymn: Hymn) => {
     e.stopPropagation();
     setFavorites(prev => {
       const next = new Set(prev);
-      if (next.has(number)) next.delete(number);
-      else next.add(number);
+      const id = getHymnId(hymn);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
@@ -110,7 +124,9 @@ export default function App() {
   // 1. Filter by search term
   // 2. Sort/Filter based on active tab
   const displayedHymns = useMemo(() => {
-    let result = [...hymns, ...customHymns];
+    // Custom songs ONLY show in 'custom' tab (or favorites if favorited).
+    let result = activeTab === 'custom' ? [...customHymns] : 
+                 activeTab === 'favourite' ? [...hymns, ...customHymns] : [...hymns];
 
     // Filter by search term if active
     if (searchTerm) {
@@ -124,11 +140,10 @@ export default function App() {
 
     // Apply Tab logic
     if (activeTab === 'favourite') {
-      result = result.filter(h => favorites.has(h.number));
+      result = result.filter(h => favorites.has(getHymnId(h)));
     } else if (activeTab === 'custom') {
-      result = result.filter(h => customHymns.some(ch => ch.number === h.number));
-      // Sort newest custom songs first
-      result.sort((a, b) => b.number - a.number);
+      // Sort normal ascending 1, 2, 3...
+      result.sort((a, b) => a.number - b.number);
     } else if (activeTab === 'index') {
       // Sort alphabetically by title
       result.sort((a, b) => a.title.localeCompare(b.title));
@@ -173,7 +188,7 @@ export default function App() {
             HYMN {String(selectedHymn.number).padStart(3, '0')}
           </div>
           <div className="flex items-center space-x-2">
-            {customHymns.some(ch => ch.number === selectedHymn.number) && (
+            {selectedHymn.isCustom && (
               <button 
                 onClick={() => handleDeleteCustomSong(selectedHymn.number)}
                 className="p-2 rounded-full hover:bg-border-subtle transition-colors text-red-500/80 hover:text-red-500"
@@ -182,12 +197,12 @@ export default function App() {
               </button>
             )}
             <button 
-              onClick={(e) => toggleFavorite(e, selectedHymn.number)}
+              onClick={(e) => toggleFavorite(e, selectedHymn)}
               className="p-2 -mr-2 rounded-full hover:bg-border-subtle transition-colors"
             >
               <Heart 
                 size={24} 
-                className={favorites.has(selectedHymn.number) ? "fill-accent-orange text-accent-orange drop-shadow-[0_0_8px_rgba(234,88,12,0.6)]" : "text-text-secondary"} 
+                className={favorites.has(getHymnId(selectedHymn)) ? "fill-accent-orange text-accent-orange drop-shadow-[0_0_8px_rgba(234,88,12,0.6)]" : "text-text-secondary"} 
               />
             </button>
           </div>
@@ -318,12 +333,12 @@ export default function App() {
                 </div>
                 
                 <button 
-                  onClick={(e) => toggleFavorite(e, hymn.number)}
+                  onClick={(e) => toggleFavorite(e, hymn)}
                   className="p-3 -m-3 shrink-0 rounded-full hover:bg-border-subtle transition-colors"
                 >
                   <Heart 
                     size={20} 
-                    className={favorites.has(hymn.number) ? "fill-accent-orange text-accent-orange" : "text-text-primary0 group-hover:text-text-secondary"} 
+                    className={favorites.has(getHymnId(hymn)) ? "fill-accent-orange text-accent-orange" : "text-text-primary0 group-hover:text-text-secondary"} 
                   />
                 </button>
               </div>
