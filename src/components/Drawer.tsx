@@ -1,4 +1,4 @@
-import { X, PenTool, Music, RefreshCw, HelpCircle, Flame } from 'lucide-react';
+import { X, PenTool, Music, RefreshCw, HelpCircle } from 'lucide-react';
 
 interface DrawerProps {
   isLightMode: boolean;
@@ -35,7 +35,7 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme }: Dr
             </button>
             <div className="flex flex-col items-center justify-center pt-8 pb-4">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-orange to-accent-gold flex items-center justify-center shadow-[0_0_30px_rgba(234,88,12,0.4)] mb-4">
-                <Flame size={48} className="text-text-primary fill-white/20" />
+                <img src="/rhrologo.png" alt="RHRO Logo" className="w-16 h-16 object-contain" />
               </div>
               <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-accent-gold to-accent-orange text-transparent bg-clip-text">
                 UPPER ROOM
@@ -74,8 +74,9 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme }: Dr
             </ul>
           </nav>
           
-          <div className="p-6 text-center text-xs text-text-primary0 border-t border-border-subtle">
-            Version 1.0.0
+          <div className="p-6 text-center text-xs text-text-primary0 border-t border-border-subtle flex flex-col items-center gap-2">
+            <span className="text-text-secondary">Version 1.0.0</span>
+            <span className="text-text-secondary opacity-70">A product of Refiner's House Revival outreach</span>
           </div>
         </div>
       </div>

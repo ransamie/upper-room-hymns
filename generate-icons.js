@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const svgPath = path.join(__dirname, 'public', 'icon.svg');
+const svgPath = path.join(__dirname, 'public', 'rhrologo.png');
 const svgBuffer = fs.readFileSync(svgPath);
 
 async function generateIcons() {
