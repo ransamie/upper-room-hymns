@@ -258,13 +258,13 @@ export default function App() {
         onClose={() => setIsDrawerOpen(false)} 
         isLightMode={isLightMode} 
         toggleTheme={() => setIsLightMode(!isLightMode)}
-        onFeedback={() => setIsFeedbackOpen(true)}
-        onHelp={() => setIsHelpOpen(true)}
-        onCompose={() => {
+        onOpenFeedback={() => setIsFeedbackOpen(true)}
+        onOpenHelp={() => setIsHelpOpen(true)}
+        onOpenCompose={() => {
           setComposeInitialHymn(null);
           setIsComposeOpen(true);
         }}
-        onMyAddedSongs={() => setActiveTab('custom')} 
+        onSelectTab={setActiveTab} 
       />
       <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
       <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
