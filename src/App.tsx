@@ -58,7 +58,11 @@ export default function App() {
       const saved = localStorage.getItem('hymn-custom-songs');
       if (saved) {
         const parsed = JSON.parse(saved);
-        return parsed.map((h: Hymn) => ({ ...h, isCustom: true }));
+        return parsed.map((h: Hymn, index: number) => {
+          // If the number is a huge timestamp (from early testing), fix it to a sequential number!
+          const fixedNumber = h.number > 10000 ? index + 1 : h.number;
+          return { ...h, number: fixedNumber, isCustom: true };
+        });
       }
     } catch (e) {
       console.error("Could not load custom songs", e);
