@@ -34,19 +34,24 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme }: Dr
               <X size={20} />
             </button>
             <div className="flex flex-col items-center justify-center pt-8 pb-4">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-orange to-accent-gold flex items-center justify-center shadow-[0_0_30px_rgba(234,88,12,0.4)] mb-4">
-                <img src="/rhrologo.png" alt="RHRO Logo" className="w-16 h-16 object-contain" />
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent-orange to-accent-gold flex items-center justify-center shadow-[0_0_30px_rgba(234,88,12,0.4)] mb-4 overflow-hidden p-2">
+                <img src="/praying_hands.png" alt="Praying Hands Logo" className="w-full h-full object-contain filter drop-shadow-md" />
               </div>
               <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-accent-gold to-accent-orange text-transparent bg-clip-text">
                 UPPER ROOM
               </h2>
-              <p className="text-text-secondary text-sm font-medium tracking-widest uppercase mt-1">Hymns</p>
+              <p className="text-sm font-medium tracking-[0.3em] uppercase text-text-secondary mt-1">Hymns</p>
             </div>
           </div>
 
-          {/* Menu Items */}
-          <nav className="flex-1 py-4">
+          <nav className="flex-1 overflow-y-auto py-4">
             <ul className="space-y-1 px-3">
+              <li>
+                <button onClick={() => { setView('list'); setIsDrawerOpen(false); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
+                  <Music size={20} className="mr-4 text-accent-gold" />
+                  <span className="font-medium">All Hymns</span>
+                </button>
+              </li>
               <li>
                 <button onClick={(e) => { if(!e.currentTarget.getAttribute('onClick')) alert('Feature coming soon!'); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
                   <PenTool size={20} className="mr-4 text-accent-gold" />
@@ -74,9 +79,12 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme }: Dr
             </ul>
           </nav>
           
-          <div className="p-6 text-center text-xs text-text-primary0 border-t border-border-subtle flex flex-col items-center gap-2">
+          <div className="p-6 text-center text-xs text-text-primary0 border-t border-border-subtle flex flex-col items-center gap-3">
             <span className="text-text-secondary">Version 1.0.0</span>
-            <span className="text-text-secondary opacity-70">A product of Refiner's House Revival outreach</span>
+            <div className="flex flex-col items-center gap-1 opacity-80">
+              <img src="/rhrologo.png" alt="RHRO Logo" className="h-10 object-contain" />
+              <span className="text-text-secondary text-[10px]">A product of Refiner's House Revival outreach</span>
+            </div>
           </div>
         </div>
       </div>

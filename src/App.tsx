@@ -12,6 +12,7 @@ type Hymn = {
 const hymns: Hymn[] = hymnsData as Hymn[];
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   
@@ -22,6 +23,13 @@ export default function App() {
   const [isLightMode, setIsLightMode] = useState(() => {
     return localStorage.getItem('theme') === 'light';
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (isLightMode) {
@@ -89,6 +97,23 @@ export default function App() {
 
     return result;
   }, [searchTerm, activeTab, favorites]);
+
+  // View: Splash Screen
+  if (showSplash) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg-primary transition-opacity duration-1000">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-40 h-40 rounded-full bg-gradient-to-br from-accent-orange to-accent-gold flex items-center justify-center shadow-[0_0_50px_rgba(234,88,12,0.5)] mb-8 overflow-hidden p-3">
+            <img src="/praying_hands.png" alt="Praying Hands Logo" className="w-full h-full object-contain filter drop-shadow-lg" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-black tracking-widest bg-gradient-to-r from-accent-gold to-accent-orange text-transparent bg-clip-text drop-shadow-lg">
+            UPPER ROOM
+          </h1>
+          <p className="text-sm font-bold tracking-[0.4em] uppercase text-text-secondary mt-2">Hymns</p>
+        </div>
+      </div>
+    );
+  }
 
   // View: Single Hymn Details
   if (selectedHymn) {
