@@ -8,7 +8,7 @@ interface DrawerProps {
   onOpenFeedback: () => void;
   onOpenHelp: () => void;
   onOpenCompose: () => void;
-  onSelectTab: (tab: 'all' | 'index' | 'favourite' | 'custom') => void;
+  onSelectTab: (tab: 'all' | 'index' | 'favourites' | 'custom') => void;
   canInstall?: boolean;
   onInstall?: () => void;
 }

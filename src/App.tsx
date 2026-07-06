@@ -194,7 +194,7 @@ export default function App() {
   const displayedHymns = useMemo(() => {
     // Custom songs ONLY show in 'custom' tab (or favorites if favorited).
     let result = activeTab === 'custom' ? [...customHymns] : 
-                 activeTab === 'favourite' ? [...hymns, ...customHymns] : [...hymns];
+                 activeTab === 'favourites' ? [...hymns, ...customHymns] : [...hymns];
 
     // Filter by search term if active
     if (searchTerm) {
