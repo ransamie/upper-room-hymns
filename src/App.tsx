@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronLeft, Heart, Menu, X, Trash2, Edit2 } from 'lucide-react';
+import { Search, ChevronLeft, Heart, Menu, X, Trash2, Edit2, Download } from 'lucide-react';
 import hymnsData from './assets/hymns.json';
 import Drawer from './components/Drawer';
 import { FeedbackModal } from './components/FeedbackModal';
@@ -385,6 +385,27 @@ export default function App() {
               className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-text-primary transition-colors bg-border-subtle/50 px-3 py-1.5 rounded-full"
             >
               Back to Hymns
+            </button>
+          </div>
+        )}
+
+        {/* Install Banner */}
+        {deferredPrompt && (
+          <div className="bg-gradient-to-r from-accent-gold to-accent-orange text-white px-4 py-3 flex items-center justify-between shadow-md relative z-20">
+            <div className="flex items-center space-x-3">
+              <div className="bg-white/20 p-2 rounded-full">
+                <Download size={20} className="animate-bounce" />
+              </div>
+              <div>
+                <p className="font-bold text-sm leading-tight">Install App</p>
+                <p className="text-xs opacity-90 leading-tight">Get offline access & fast loading</p>
+              </div>
+            </div>
+            <button 
+              onClick={handleInstallClick}
+              className="bg-white text-accent-orange px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:shadow-md active:scale-95 transition-all whitespace-nowrap"
+            >
+              Install
             </button>
           </div>
         )}
