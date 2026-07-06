@@ -126,7 +126,35 @@ export default function App() {
 
   const handleDeleteCustomSong = (number: number) => {
     if (confirm("Are you sure you want to delete this custom song?")) {
-      setCustomHymns(prev => prev.filter(h => h.number !== number));
+      const remainingHymns = customHymns.filter(h => h.number !== number);
+      const updatedHymns = remainingHymns.map((h, index) => ({
+        ...h,
+        number: index + 1
+      }));
+      
+      setCustomHymns(updatedHymns);
+      
+      setFavorites(prevFavs => {
+        const newFavs = new Set<string>();
+        
+        // Keep non-custom favorites
+        prevFavs.forEach(f => {
+          if (!f.startsWith('c_')) {
+            newFavs.add(f);
+          }
+        });
+        
+        // Re-map custom favorites based on the old IDs
+        updatedHymns.forEach((newHymn, index) => {
+          const oldHymn = remainingHymns[index];
+          if (prevFavs.has(`c_${oldHymn.number}`)) {
+            newFavs.add(`c_${newHymn.number}`);
+          }
+        });
+        
+        return newFavs;
+      });
+
       setSelectedHymn(null);
     }
   };
