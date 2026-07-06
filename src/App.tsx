@@ -425,7 +425,7 @@ export default function App() {
             <div 
               key={hymn.number}
               onClick={() => { setSelectedHymn(hymn); window.scrollTo(0, 0); }}
-              className="group relative bg-bg-secondary/40 backdrop-blur-sm border border-border-subtle rounded-xl shadow-lg cursor-pointer transition-all duration-300 hover:bg-bg-secondary/80 hover:border-accent-gold/30 hover:-translate-y-0.5 overflow-hidden flex items-center"
+              className="group relative bg-bg-secondary/40 backdrop-blur-sm border border-border-subtle rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 hover:bg-bg-secondary/80 hover:border-accent-gold/30 hover:-translate-y-0.5 overflow-hidden flex items-center"
             >
               {/* Vibrant left border accent */}
               <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-accent-gold to-accent-orange opacity-80 group-hover:opacity-100 transition-opacity"></div>
