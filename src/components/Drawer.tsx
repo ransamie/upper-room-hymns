@@ -1,4 +1,4 @@
-import { X, PenTool, Music, RefreshCw, HelpCircle, Mail } from 'lucide-react';
+import { X, PenTool, Music, RefreshCw, HelpCircle, Mail, Download } from 'lucide-react';
 
 interface DrawerProps {
   isLightMode: boolean;
@@ -9,9 +9,11 @@ interface DrawerProps {
   onOpenHelp: () => void;
   onOpenCompose: () => void;
   onSelectTab: (tab: 'all' | 'index' | 'favourite' | 'custom') => void;
+  canInstall?: boolean;
+  onInstall?: () => void;
 }
 
-export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOpenFeedback, onOpenHelp, onOpenCompose, onSelectTab }: DrawerProps) {
+export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOpenFeedback, onOpenHelp, onOpenCompose, onSelectTab, canInstall, onInstall }: DrawerProps) {
   return (
     <>
       {/* Backdrop */}
@@ -50,6 +52,14 @@ export default function Drawer({ isOpen, onClose, isLightMode, toggleTheme, onOp
 
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="space-y-1 px-3">
+              {canInstall && (
+                <li className="mb-4">
+                  <button onClick={() => { onClose(); onInstall?.(); }} className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-accent-gold to-accent-orange text-white font-bold rounded-xl shadow-lg hover:shadow-xl active:scale-95 transition-all">
+                    <Download size={20} className="mr-3" />
+                    <span>Install App</span>
+                  </button>
+                </li>
+              )}
               <li>
                 <button onClick={() => { onSelectTab('all'); onClose(); }} className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-border-subtle rounded-xl transition-colors">
                   <Music size={20} className="mr-4 text-accent-gold" />

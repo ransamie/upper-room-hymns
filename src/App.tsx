@@ -53,6 +53,28 @@ export default function App() {
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [composeInitialHymn, setComposeInitialHymn] = useState<Hymn | null>(null);
   
+  // PWA Install Prompt State
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
+  
   // Custom Hymns stored locally
   const [customHymns, setCustomHymns] = useState<Hymn[]>(() => {
     try {
@@ -206,7 +228,7 @@ export default function App() {
             HYMN {String(selectedHymn.number).padStart(3, '0')}
           </div>
           <div className="flex items-center space-x-2">
-            {(selectedHymn.isCustom || customHymns.some(ch => ch.number === selectedHymn.number)) && (
+            {selectedHymn.isCustom && (
               <>
                 <button 
                   onClick={() => {
@@ -271,6 +293,8 @@ export default function App() {
           setIsComposeOpen(true);
         }}
         onSelectTab={setActiveTab} 
+        canInstall={!!deferredPrompt}
+        onInstall={handleInstallClick}
       />
       <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
       <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
