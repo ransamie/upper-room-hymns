@@ -13,7 +13,7 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
       manifest: {
         name: 'Upper Room Hymns',
-        short_name: 'UR Hymns',
+        short_name: 'Upper Room Hymns',
         description: 'Upper Room Hymns App with offline capability',
         theme_color: '#0f172a',
         background_color: '#0f172a',
