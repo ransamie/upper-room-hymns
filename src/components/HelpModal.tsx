@@ -36,7 +36,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             <h3 className="text-lg font-bold text-accent-gold mb-2">About the App</h3>
             <p className="text-text-secondary text-sm leading-relaxed">
               The Upper Room Hymns app is designed to bring spiritual nourishment right to your fingertips. 
-              A product of Refiner's House Revival Outreach, this app allows you to carry your favorite hymns 
+              A product of Refiner's House Revival Outreach, this app allows you to carry your favourite hymns 
               with you anywhere, even without an internet connection.
             </p>
           </section>
@@ -70,8 +70,8 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
                   <Heart size={18} className="text-accent-orange" />
                 </div>
                 <div>
-                  <strong className="text-text-primary block text-sm">Favorites</strong>
-                  <span className="text-text-secondary text-sm">Tap the heart icon on any hymn to save it to your Favorites tab for quick access during services.</span>
+                  <strong className="text-text-primary block text-sm">Favourites</strong>
+                  <span className="text-text-secondary text-sm">Tap the heart icon on any hymn to save it to your Favourites tab for quick access during services.</span>
                 </div>
               </li>
 

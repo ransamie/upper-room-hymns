@@ -24,8 +24,8 @@ export default function App() {
   
   const [selectedHymn, setSelectedHymn] = useState<Hymn | null>(null);
   
-  // Tabs: 'all', 'index', 'favourite', 'custom'
-  const [activeTab, setActiveTab] = useState<'all' | 'index' | 'favourite' | 'custom'>('all');
+  // Tabs: 'all', 'index', 'favourites', 'custom'
+  const [activeTab, setActiveTab] = useState<'all' | 'index' | 'favourites' | 'custom'>('all');
   const [isLightMode, setIsLightMode] = useState(() => {
     return localStorage.getItem('theme') === 'light';
   });
@@ -179,7 +179,7 @@ export default function App() {
     }
 
     // Apply Tab logic
-    if (activeTab === 'favourite') {
+    if (activeTab === 'favourites') {
       result = result.filter(h => favorites.has(getHymnId(h)));
     } else if (activeTab === 'custom') {
       // Sort normal ascending 1, 2, 3...
@@ -362,7 +362,7 @@ export default function App() {
         {/* Tabs */}
         {activeTab !== 'custom' ? (
           <div className="flex bg-bg-primary/90 backdrop-blur-md border-b border-border-subtle relative">
-            {['all', 'index', 'favourite'].map((tab) => (
+            {['all', 'index', 'favourites'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as typeof activeTab)}
@@ -458,8 +458,8 @@ export default function App() {
             <div className="text-center py-20 text-text-primary0">
               <Heart size={48} className="mx-auto mb-4 opacity-20" />
               <p className="text-lg">
-                {activeTab === 'favourite' 
-                  ? "You haven't added any favorites yet." 
+                {activeTab === 'favourites' 
+                  ? "You haven't added any favourites yet." 
                   : `No hymns found matching "${searchTerm}"`}
               </p>
             </div>
