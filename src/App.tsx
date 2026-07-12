@@ -256,37 +256,6 @@ export default function App() {
     }
 
     return result;
-  }, [searchTerm, activeTab, favorites, customHymns]);
-
-  // Lazy loading / Infinite scroll state
-  const [visibleCount, setVisibleCount] = useState(20);
-
-  // Reset visible count when search or tab changes
-  useEffect(() => {
-    setVisibleCount(20);
-  }, [searchTerm, activeTab]);
-
-  // Observer for infinite scroll
-  useEffect(() => {
-    if (!selectedHymn) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            setVisibleCount((prev) => prev + 20);
-          }
-        },
-        { threshold: 0.1 }
-      );
-      
-      const sentinel = document.getElementById('scroll-sentinel');
-      if (sentinel) {
-        observer.observe(sentinel);
-      }
-      
-      return () => observer.disconnect();
-    }
-  }, [selectedHymn, displayedHymns.length]);
-
   // View: Splash Screen
   if (showSplash) {
     return (
@@ -557,7 +526,7 @@ export default function App() {
         )}
         
         <div className="space-y-3">
-          {displayedHymns.slice(0, visibleCount).map((hymn) => (
+          {displayedHymns.map((hymn) => (
             <div 
               key={hymn.number}
               onClick={() => { setSelectedHymn(hymn); window.scrollTo(0, 0); }}
@@ -589,11 +558,6 @@ export default function App() {
               </div>
             </div>
           ))}
-
-          {/* Sentinel element for infinite scroll */}
-          {visibleCount < displayedHymns.length && (
-            <div id="scroll-sentinel" className="h-10 w-full"></div>
-          )}
 
           {displayedHymns.length === 0 && (
             <div className="text-center py-20 text-text-primary0">
