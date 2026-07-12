@@ -55,6 +55,8 @@ export default function App() {
   
   // PWA Install Prompt State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showIosInstall, setShowIosInstall] = useState(false);
+  const [dismissedIos, setDismissedIos] = useState(false);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: any) => {
@@ -63,6 +65,21 @@ export default function App() {
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // iOS Safari detection
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    };
+    const isStandalone = () => {
+      return ('standalone' in window.navigator && (window.navigator as any).standalone) ||
+             window.matchMedia('(display-mode: standalone)').matches;
+    };
+
+    if (isIos() && !isStandalone()) {
+      setShowIosInstall(true);
+    }
+
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
 
@@ -434,6 +451,28 @@ export default function App() {
               className="bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:shadow-md active:scale-95 transition-all whitespace-nowrap"
             >
               Install
+            </button>
+          </div>
+        )}
+
+        {/* iOS Install Prompt */}
+        {showIosInstall && !dismissedIos && !deferredPrompt && (
+          <div className="bg-gradient-to-r from-accent-gold to-accent-orange text-slate-900 px-4 py-3 flex items-center justify-between shadow-md relative z-20">
+            <div className="flex items-center space-x-3">
+              <div className="bg-slate-900/10 p-2 rounded-full shrink-0">
+                <Download size={20} className="animate-bounce" />
+              </div>
+              <div>
+                <p className="font-bold text-sm leading-tight text-slate-900">Install on iOS</p>
+                <p className="text-xs font-medium text-slate-900/80 leading-tight">Tap Share <span className="inline-block border border-slate-900/30 rounded px-1 text-[10px] mx-0.5">↑</span> then <b>Add to Home Screen</b></p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setDismissedIos(true)}
+              className="p-2 ml-2 rounded-full hover:bg-slate-900/10 transition-colors text-slate-900"
+              aria-label="Dismiss"
+            >
+              <X size={20} />
             </button>
           </div>
         )}
