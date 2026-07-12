@@ -33,7 +33,7 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
-    }, 2500);
+    }, 1200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -228,23 +228,28 @@ export default function App() {
 
     // Filter by search term if active
     if (searchTerm) {
-      const lower = searchTerm.toLowerCase();
-      result = result.filter(h => 
-        h.title.toLowerCase().includes(lower) || 
-        h.number.toString().includes(lower) ||
-        h.lyrics.toLowerCase().includes(lower)
+      const term = searchTerm.toLowerCase();
+      result = result.filter(hymn => 
+        hymn.title.toLowerCase().includes(term) || 
+        hymn.lyrics.toLowerCase().includes(term) ||
+        String(hymn.number).includes(term)
       );
     }
 
-    // Apply Tab logic
+    // Filter by favorites if in favorites tab
     if (activeTab === 'favourites') {
-      result = result.filter(h => favorites.has(getHymnId(h)));
-    } else if (activeTab === 'custom') {
+      result = result.filter(hymn => favorites.has(getHymnId(hymn)));
+    }
+
+    // Apply Tab logic
+    if (activeTab === 'custom') {
       // Sort normal ascending 1, 2, 3...
       result.sort((a, b) => a.number - b.number);
     } else if (activeTab === 'index') {
       // Sort alphabetically by title
       result.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (activeTab === 'favourites') {
+      // Keep order
     } else {
       // 'all' tab -> Sort by number
       result.sort((a, b) => a.number - b.number);
@@ -252,6 +257,35 @@ export default function App() {
 
     return result;
   }, [searchTerm, activeTab, favorites, customHymns]);
+
+  // Lazy loading / Infinite scroll state
+  const [visibleCount, setVisibleCount] = useState(20);
+
+  // Reset visible count when search or tab changes
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [searchTerm, activeTab]);
+
+  // Observer for infinite scroll
+  useEffect(() => {
+    if (!selectedHymn) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setVisibleCount((prev) => prev + 20);
+          }
+        },
+        { threshold: 0.1 }
+      );
+      
+      const sentinel = document.getElementById('scroll-sentinel');
+      if (sentinel) {
+        observer.observe(sentinel);
+      }
+      
+      return () => observer.disconnect();
+    }
+  }, [selectedHymn, displayedHymns.length]);
 
   // View: Splash Screen
   if (showSplash) {
@@ -523,7 +557,7 @@ export default function App() {
         )}
         
         <div className="space-y-3">
-          {displayedHymns.map((hymn) => (
+          {displayedHymns.slice(0, visibleCount).map((hymn) => (
             <div 
               key={hymn.number}
               onClick={() => { setSelectedHymn(hymn); window.scrollTo(0, 0); }}
@@ -555,6 +589,11 @@ export default function App() {
               </div>
             </div>
           ))}
+
+          {/* Sentinel element for infinite scroll */}
+          {visibleCount < displayedHymns.length && (
+            <div id="scroll-sentinel" className="h-10 w-full"></div>
+          )}
 
           {displayedHymns.length === 0 && (
             <div className="text-center py-20 text-text-primary0">
