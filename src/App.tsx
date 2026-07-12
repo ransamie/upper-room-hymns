@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronLeft, Heart, Menu, X, Trash2, Edit2, Download } from 'lucide-react';
+import { Search, ChevronLeft, Heart, Menu, X, Trash2, Edit2, Download, ExternalLink } from 'lucide-react';
 import hymnsData from './assets/hymns.json';
 import Drawer from './components/Drawer';
 import { FeedbackModal } from './components/FeedbackModal';
@@ -57,6 +57,8 @@ export default function App() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showIosInstall, setShowIosInstall] = useState(false);
   const [dismissedIos, setDismissedIos] = useState(false);
+  const [showInAppBrowserPrompt, setShowInAppBrowserPrompt] = useState(false);
+  const [dismissedInApp, setDismissedInApp] = useState(false);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: any) => {
@@ -71,12 +73,23 @@ export default function App() {
       const userAgent = window.navigator.userAgent.toLowerCase();
       return /iphone|ipad|ipod/.test(userAgent);
     };
+    
     const isStandalone = () => {
       return ('standalone' in window.navigator && (window.navigator as any).standalone) ||
              window.matchMedia('(display-mode: standalone)').matches;
     };
+    
+    // In-app browser detection
+    const checkInAppBrowser = () => {
+      const userAgent = window.navigator.userAgent || window.navigator.vendor || (window as any).opera;
+      const rules = ['FBAN', 'FBAV', 'Instagram', 'WhatsApp', 'Line', 'Snapchat', 'Twitter', 'LinkedIn', 'TikTok', 'wv'];
+      const regex = new RegExp(rules.join('|'), 'ig');
+      return Boolean(userAgent.match(regex));
+    };
 
-    if (isIos() && !isStandalone()) {
+    if (checkInAppBrowser() && !isStandalone()) {
+      setShowInAppBrowserPrompt(true);
+    } else if (isIos() && !isStandalone()) {
       setShowIosInstall(true);
     }
 
@@ -455,8 +468,30 @@ export default function App() {
           </div>
         )}
 
+        {/* In-App Browser Prompt */}
+        {showInAppBrowserPrompt && !dismissedInApp && !deferredPrompt && (
+          <div className="bg-gradient-to-r from-red-500 to-accent-orange text-white px-4 py-3 flex items-center justify-between shadow-md relative z-20">
+            <div className="flex items-center space-x-3">
+              <div className="bg-white/20 p-2 rounded-full shrink-0">
+                <ExternalLink size={20} className="animate-pulse" />
+              </div>
+              <div>
+                <p className="font-bold text-sm leading-tight text-white">Open in Browser</p>
+                <p className="text-xs font-medium text-white/90 leading-tight mt-0.5">To install, tap the 3 dots (⋮) and select <b>Open in Chrome / Safari</b></p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setDismissedInApp(true)}
+              className="p-2 ml-2 rounded-full hover:bg-white/10 transition-colors text-white"
+              aria-label="Dismiss"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        )}
+
         {/* iOS Install Prompt */}
-        {showIosInstall && !dismissedIos && !deferredPrompt && (
+        {showIosInstall && !showInAppBrowserPrompt && !dismissedIos && !deferredPrompt && (
           <div className="bg-gradient-to-r from-accent-gold to-accent-orange text-slate-900 px-4 py-3 flex items-center justify-between shadow-md relative z-20">
             <div className="flex items-center space-x-3">
               <div className="bg-slate-900/10 p-2 rounded-full shrink-0">
