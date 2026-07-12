@@ -256,6 +256,7 @@ export default function App() {
     }
 
     return result;
+  }, [searchTerm, activeTab, favorites, customHymns]);
   // View: Splash Screen
   if (showSplash) {
     return (
