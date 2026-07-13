@@ -93,7 +93,19 @@ export default function App() {
       setShowIosInstall(true);
     }
 
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    const handleAppInstalled = () => {
+      // @ts-ignore
+      if (window.gtag) {
+        // @ts-ignore
+        window.gtag('event', 'install', { event_category: 'pwa', event_label: 'installed' });
+      }
+    };
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
   }, []);
 
   const handleInstallClick = async () => {
@@ -102,6 +114,11 @@ export default function App() {
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') {
       setDeferredPrompt(null);
+      // @ts-ignore
+      if (window.gtag) {
+        // @ts-ignore
+        window.gtag('event', 'install_prompt_accepted', { event_category: 'pwa' });
+      }
     }
   };
   
