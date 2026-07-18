@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Search, ChevronLeft, Heart, Menu, X, Trash2, Edit2, Download, ExternalLink } from 'lucide-react';
 import hymnsData from './assets/hymns.json';
 import Drawer from './components/Drawer';
@@ -16,6 +16,56 @@ type Hymn = {
 const getHymnId = (h: Hymn | { number: number, isCustom?: boolean }) => `${h.isCustom ? 'c_' : ''}${h.number}`;
 
 const hymns: Hymn[] = hymnsData as Hymn[];
+
+// Custom pinch-to-zoom component for lyrics only
+function PinchZoomLyrics({ children }: { children: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scaleRef = useRef(1);
+  const lastDistRef = useRef<number | null>(null);
+
+  const getDistance = (touches: React.TouchList) => {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(dx, dy);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      lastDistRef.current = getDistance(e.touches);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && lastDistRef.current !== null) {
+      e.preventDefault();
+      const newDist = getDistance(e.touches);
+      const delta = newDist / lastDistRef.current;
+      scaleRef.current = Math.min(Math.max(scaleRef.current * delta, 0.8), 3);
+      if (containerRef.current) {
+        containerRef.current.style.transform = `scale(${scaleRef.current})`;
+        containerRef.current.style.transformOrigin = 'top center';
+      }
+      lastDistRef.current = newDist;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    lastDistRef.current = null;
+  };
+
+  return (
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{ overflow: 'hidden' }}
+    >
+      <div ref={containerRef} style={{ transition: 'transform 0.05s ease-out' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -338,11 +388,12 @@ export default function App() {
           </div>
         </header>
 
-        <main className="max-w-2xl mx-auto p-6 pb-24" style={{ touchAction: 'pan-y pinch-zoom' }}>
+        <main className="max-w-2xl mx-auto p-6 pb-24">
           <h1 className="text-xl md:text-2xl font-bold text-center mb-8 text-text-primary drop-shadow-md" style={{ fontFamily: "'Garamond', 'EB Garamond', 'Georgia', serif", letterSpacing: '0.02em' }}>
             {selectedHymn.title}
           </h1>
-          <div className="text-center" style={{ fontFamily: "'EB Garamond', 'Garamond', 'Georgia', 'Times New Roman', serif" }}>
+          <PinchZoomLyrics>
+            <div className="text-center" style={{ fontFamily: "'EB Garamond', 'Garamond', 'Georgia', 'Times New Roman', serif" }}>
             {selectedHymn.lyrics
               .split(/\n\n+/)
               .filter(block => block.trim())
@@ -368,6 +419,7 @@ export default function App() {
               })
             }
           </div>
+          </PinchZoomLyrics>
         </main>
         <ComposeModal 
           isOpen={isComposeOpen} 
