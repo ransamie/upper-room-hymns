@@ -389,11 +389,11 @@ export default function App() {
         </header>
 
         <main className="max-w-2xl mx-auto p-6 pb-24">
-          <h1 className="text-xl md:text-2xl font-bold text-center mb-8 text-text-primary drop-shadow-md" style={{ fontFamily: "'Garamond', 'EB Garamond', 'Georgia', serif", letterSpacing: '0.02em' }}>
+          <h1 className="text-xl md:text-2xl font-bold text-center mb-8 text-text-primary drop-shadow-md" style={{ fontFamily: "'Lora', 'Georgia', serif", letterSpacing: '0.02em' }}>
             {selectedHymn.title}
           </h1>
           <PinchZoomLyrics>
-            <div className="text-center" style={{ fontFamily: "'EB Garamond', 'Garamond', 'Georgia', 'Times New Roman', serif" }}>
+            <div className="text-center" style={{ fontFamily: "'Lora', 'Georgia', 'Times New Roman', serif" }}>
             {selectedHymn.lyrics
               .split(/\n\n+/)
               .filter(block => block.trim())
@@ -407,13 +407,13 @@ export default function App() {
                   return (
                     <div key={idx} className="mb-6">
                       <div className="text-xs font-semibold tracking-widest uppercase text-accent-gold/70 mb-1">{label}</div>
-                      <p className="leading-7 text-base text-text-primary whitespace-pre-line">{rest}</p>
+                      <p className="leading-8 text-lg text-text-primary whitespace-pre-line">{rest}</p>
                     </div>
                   );
                 }
                 return (
                   <div key={idx} className="mb-6">
-                    <p className="leading-7 text-base text-text-primary whitespace-pre-line">{trimmed}</p>
+                    <p className="leading-8 text-lg text-text-primary whitespace-pre-line">{trimmed}</p>
                   </div>
                 );
               })
