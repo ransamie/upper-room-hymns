@@ -338,12 +338,35 @@ export default function App() {
           </div>
         </header>
 
-        <main className="max-w-2xl mx-auto p-6 pb-24">
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-8 text-text-primary drop-shadow-md">
+        <main className="max-w-2xl mx-auto p-6 pb-24" style={{ touchAction: 'pan-y pinch-zoom' }}>
+          <h1 className="text-xl md:text-2xl font-bold text-center mb-8 text-text-primary drop-shadow-md" style={{ fontFamily: "'Garamond', 'EB Garamond', 'Georgia', serif", letterSpacing: '0.02em' }}>
             {selectedHymn.title}
           </h1>
-          <div className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap font-serif text-text-primary text-center">
-            {selectedHymn.lyrics}
+          <div className="text-center" style={{ fontFamily: "'EB Garamond', 'Garamond', 'Georgia', 'Times New Roman', serif" }}>
+            {selectedHymn.lyrics
+              .split(/\n\n+/)
+              .filter(block => block.trim())
+              .map((block, idx) => {
+                const trimmed = block.trim();
+                // Match stanza numbers like "1.", "2.", "1.", "Refrain:", "Chorus:" at the start
+                const stanzaMatch = trimmed.match(/^(\d+\.?\s*|Refrain:\s*|Chorus:\s*)/i);
+                if (stanzaMatch) {
+                  const label = stanzaMatch[0].trim();
+                  const rest = trimmed.slice(stanzaMatch[0].length).trim();
+                  return (
+                    <div key={idx} className="mb-6">
+                      <div className="text-xs font-semibold tracking-widest uppercase text-accent-gold/70 mb-1">{label}</div>
+                      <p className="leading-7 text-base text-text-primary whitespace-pre-line">{rest}</p>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={idx} className="mb-6">
+                    <p className="leading-7 text-base text-text-primary whitespace-pre-line">{trimmed}</p>
+                  </div>
+                );
+              })
+            }
           </div>
         </main>
         <ComposeModal 
