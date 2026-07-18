@@ -342,7 +342,7 @@ export default function App() {
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-8 text-text-primary drop-shadow-md">
             {selectedHymn.title}
           </h1>
-          <div className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap font-serif text-text-primary">
+          <div className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap font-serif text-text-primary text-center">
             {selectedHymn.lyrics}
           </div>
         </main>
