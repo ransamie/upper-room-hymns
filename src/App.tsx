@@ -18,9 +18,10 @@ const getHymnId = (h: Hymn | { number: number, isCustom?: boolean }) => `${h.isC
 const hymns: Hymn[] = hymnsData as Hymn[];
 
 // Custom pinch-to-zoom component for lyrics only
+// Uses font-size scaling so text reflows within screen width instead of overflowing
 function PinchZoomLyrics({ children }: { children: React.ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scaleRef = useRef(1);
+  const fontSizeRef = useRef(18); // base font size in px (matches text-lg)
   const lastDistRef = useRef<number | null>(null);
 
   const getDistance = (touches: React.TouchList) => {
@@ -40,10 +41,10 @@ function PinchZoomLyrics({ children }: { children: React.ReactNode }) {
       e.preventDefault();
       const newDist = getDistance(e.touches);
       const delta = newDist / lastDistRef.current;
-      scaleRef.current = Math.min(Math.max(scaleRef.current * delta, 0.8), 3);
+      // Clamp font size between 12px and 32px
+      fontSizeRef.current = Math.min(Math.max(fontSizeRef.current * delta, 12), 32);
       if (containerRef.current) {
-        containerRef.current.style.transform = `scale(${scaleRef.current})`;
-        containerRef.current.style.transformOrigin = 'top center';
+        containerRef.current.style.fontSize = `${fontSizeRef.current}px`;
       }
       lastDistRef.current = newDist;
     }
@@ -58,9 +59,8 @@ function PinchZoomLyrics({ children }: { children: React.ReactNode }) {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      style={{ overflow: 'hidden' }}
     >
-      <div ref={containerRef} style={{ transition: 'transform 0.05s ease-out' }}>
+      <div ref={containerRef}>
         {children}
       </div>
     </div>
