@@ -60,7 +60,7 @@ function PinchZoomLyrics({ children }: { children: React.ReactNode }) {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <div ref={containerRef}>
+      <div ref={containerRef} style={{ fontSize: '18px', lineHeight: 1.6 }}>
         {children}
       </div>
     </div>
@@ -407,13 +407,13 @@ export default function App() {
                   return (
                     <div key={idx} className="mb-6">
                       <div className="text-xs font-semibold tracking-widest uppercase text-accent-gold/70 mb-1">{label}</div>
-                      <p className="leading-8 text-lg text-text-primary whitespace-pre-line">{rest}</p>
+                      <p className="text-text-primary whitespace-pre-line">{rest}</p>
                     </div>
                   );
                 }
                 return (
                   <div key={idx} className="mb-6">
-                    <p className="leading-8 text-lg text-text-primary whitespace-pre-line">{trimmed}</p>
+                    <p className="text-text-primary whitespace-pre-line">{trimmed}</p>
                   </div>
                 );
               })
